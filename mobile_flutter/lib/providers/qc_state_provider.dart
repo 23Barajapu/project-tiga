@@ -6,7 +6,7 @@ import '../presentation/widgets/history_view.dart';
 
 class QcStateProvider extends ChangeNotifier {
   // IP Laptop kamu - Pastikan Laravel sudah running di IP ini
-  final String baseUrl = "http://10.188.27.109:8001/api";
+  final String baseUrl = "http://10.102.0.222:8000/api";
 
   bool isLedOn = true;
   bool isScanning = false;
@@ -39,7 +39,7 @@ class QcStateProvider extends ChangeNotifier {
         List<dynamic> data = json.decode(response.body);
 
         if (data.isNotEmpty) {
-          // 1. Mapping data dari database ke list HistoryRecord
+          // 1. Mapping SELURUH data dari database tanpa limit
           List<HistoryRecord> allRecords = data.map((item) {
             String statusRaw = item['status'] ?? 'UNKNOWN';
             String gradeText = "";
@@ -64,29 +64,28 @@ class QcStateProvider extends ChangeNotifier {
               recommendation: item['recommendation'],
               tss: item['tss'] != null
                   ? double.tryParse(item['tss'].toString())
-                  : null, // <--- Mapping ini
+                  : null,
             );
           }).toList();
 
-          // 2. LIMIT DASHBOARD: Hanya simpan 10 data terbaru di list utama
+          // 2. TAMPILAN DASHBOARD: Tetap limit 10 agar UI tidak berat/lag
+          // Tapi data perhitungan (ripe/unripe) tetap pakai 'data' yang lengkap
           historyLogs = allRecords.take(10).toList();
 
-          // 3. Update Dashboard Stats (Data Paling Baru)
+          // 3. Update Dashboard Stats (Berdasarkan data terbaru/indeks 0)
           var latest = data.first;
-          aiStatus =
-              (latest['status'] == 'RIPE' || latest['status'] == 'HALF_RIPE')
+          aiStatus = (latest['status'] == 'RIPE' || latest['status'] == 'HALF_RIPE')
                   ? 'MATANG'
                   : 'MENTAH';
 
-          confidenceScore =
-              double.tryParse(latest['confidence_score'].toString()) ?? 0.0;
+          confidenceScore = double.tryParse(latest['confidence_score'].toString()) ?? 0.0;
           weight = double.tryParse(latest['weight'].toString()) ?? 0.0;
           voc = double.tryParse(latest['gas_value'].toString()) ?? 0.0;
-          temperature =
-              double.tryParse(latest['temperature'].toString()) ?? 0.0;
-          humidity = 65.0; // Mock value
+          temperature = double.tryParse(latest['temperature'].toString()) ?? 0.0;
+          humidity = 65.0; 
 
-          // 4. Update Counts (Setengah Matang digabung ke Matang)
+          // 4. HITUNG REAL STATS (Dari 757 data database)
+          // Ini yang bikin angka di Analytics Card kamu akurat
           ripeCount = data
               .where((item) =>
                   item['status'] == 'RIPE' || item['status'] == 'HALF_RIPE')
@@ -103,7 +102,6 @@ class QcStateProvider extends ChangeNotifier {
       print("Error Fetching Data: $e");
     }
   }
-
   // Fungsi untuk Update TSS dari Flutter
   Future<bool> updateTss(int id, double tssValue) async {
     try {

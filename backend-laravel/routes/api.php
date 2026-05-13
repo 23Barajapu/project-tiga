@@ -13,3 +13,4 @@ Route::get('/nanas/status', [PineappleController::class, 'setStatus']);
 
 // Endpoint baru untuk Update TSS dari Flutter
 Route::post('/pineapple/update-tss/{id}', [PineappleController::class, 'updateTss']);
+Route::post('/nanas/status', [PineappleController::class, 'setStatus']);

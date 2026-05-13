@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class QualityLog extends Model
 {
     protected $fillable = [
+        'status',
+        'confidence_score',
         'weight',
         'gas_value',
         'temperature',
-        'confidence_score',
-        'status',
-        'tss',            // Tambahkan ini
-        'recommendation'  // Tambahkan ini
+        'tss', // Jika ada kolom TSS
+        'tracking_id', // Tambahkan ini
+        'image_url'    // Tambahkan ini
     ];
     protected function serializeDate(\DateTimeInterface $date)
     {

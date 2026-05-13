@@ -86,40 +86,80 @@ class HistoryScreen extends StatelessWidget {
           children: [
             Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2))),
             const SizedBox(height: 20),
-            const Text("INPUT NILAI TSS (°Brix)", style: TextStyle(color: AppTheme.accentNeonGreen, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            Text(record.title, style: const TextStyle(color: Colors.white70, fontSize: 12)),
-            const SizedBox(height: 20),
-            TextField(
-              controller: tssController,
-              autofocus: true,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                filled: true, fillColor: Colors.black26, hintText: "0.0 - 32.0",
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppTheme.accentNeonGreen.withOpacity(0.3))),
-                focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: AppTheme.accentNeonGreen)),
+            
+            // --- FOTO DETEKSI ---
+            if (record.imageUrl != null)
+              Container(
+                width: double.infinity, height: 200,
+                margin: const EdgeInsets.only(bottom: 20),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppTheme.accentNeonGreen.withOpacity(0.3)),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(11),
+                  child: Image.network(
+                    record.imageUrl!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stack) => const Center(
+                      child: Icon(Icons.broken_image_rounded, color: Colors.white24, size: 40),
+                    ),
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(height: 25),
-            SizedBox(
-              width: double.infinity, height: 50,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: AppTheme.accentNeonGreen),
-                onPressed: () async {
-                  if (tssController.text.isNotEmpty) {
-                    final double? val = double.tryParse(tssController.text);
-                    if (val != null) {
+
+            Text(record.title.toUpperCase(), style: const TextStyle(color: AppTheme.accentNeonGreen, fontWeight: FontWeight.bold, fontSize: 16)),
+            Text(record.subtitle, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+            const SizedBox(height: 20),
+
+            if (record.recommendation == null && !record.isError) ...[
+              const Text("INPUT NILAI TSS (°Brix)", style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 11)),
+              const SizedBox(height: 12),
+              TextField(
+                controller: tssController,
+                autofocus: true,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  filled: true, fillColor: Colors.black26, hintText: "0.0 - 32.0",
+                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppTheme.accentNeonGreen.withOpacity(0.3))),
+                  focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: AppTheme.accentNeonGreen)),
+                ),
+              ),
+              const SizedBox(height: 25),
+              SizedBox(
+                width: double.infinity, height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: AppTheme.accentNeonGreen),
+                  onPressed: () async {
+                    if (tssController.text.isNotEmpty) {
                       final messenger = ScaffoldMessenger.of(context);
-                      await provider.updateTss(record.id, val);
+                      await provider.updateTss(record.id, double.parse(tssController.text));
                       if (context.mounted) Navigator.pop(context);
                       messenger.showSnackBar(const SnackBar(content: Text("Berhasil Perbarui Rekomendasi!"), backgroundColor: AppTheme.accentNeonGreen));
                     }
-                  }
-                },
-                child: const Text("PROSES REKOMENDASI", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                  },
+                  child: const Text("PROSES REKOMENDASI", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                ),
               ),
-            ),
+            ] else if (record.recommendation != null) ...[
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppTheme.accentNeonGreen.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    const Text("REKOMENDASI PENGOLAHAN", style: TextStyle(color: Colors.white54, fontSize: 10)),
+                    const SizedBox(height: 8),
+                    Text(record.recommendation!, 
+                      style: const TextStyle(color: AppTheme.accentNeonGreen, fontSize: 18, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+            ],
           ],
         ),
       ),

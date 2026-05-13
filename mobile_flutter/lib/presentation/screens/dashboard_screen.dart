@@ -171,8 +171,8 @@ class DashboardScreen extends StatelessWidget {
             Positioned.fill(
               child: Mjpeg(
                 isLive: true,
-                // Menggunakan IP khusus Emulator untuk akses Laptop
-                stream: 'http://10.102.0.222:8888/video_feed',
+                // Menggunakan IP laptop yang sama
+                stream: 'http://10.188.27.109:8888/video_feed',
                 fit: BoxFit.cover,
                 error: (context, error, stack) => Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -291,34 +291,83 @@ class DashboardScreen extends StatelessWidget {
             Container(
                 width: 40, height: 4, decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2))),
             const SizedBox(height: 20),
-            const Text("INPUT NILAI TSS (°Brix)",
-                style: TextStyle(color: AppTheme.accentNeonGreen, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 20),
-            TextField(
-              controller: tssController,
-              autofocus: true,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(filled: true, fillColor: Colors.black26, hintText: "Example: 12.5"),
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: AppTheme.accentNeonGreen),
-                onPressed: () async {
-                  if (tssController.text.isNotEmpty) {
-                    final messenger = ScaffoldMessenger.of(context);
-                    await provider.updateTss(record.id, double.parse(tssController.text));
-                    if (context.mounted) Navigator.pop(context);
-                    messenger.showSnackBar(const SnackBar(
-                        content: Text("Data Terupdate!"), backgroundColor: AppTheme.accentNeonGreen));
-                  }
-                },
-                child: const Text("SIMPAN", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+            
+            // --- TAMPILKAN FOTO DETEKSI ---
+            if (record.imageUrl != null)
+              Container(
+                width: double.infinity,
+                height: 200,
+                margin: const EdgeInsets.only(bottom: 20),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppTheme.accentNeonGreen.withOpacity(0.3)),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(11),
+                  child: Image.network(
+                    record.imageUrl!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stack) => const Center(
+                      child: Icon(Icons.broken_image_rounded, color: Colors.white24, size: 40),
+                    ),
+                  ),
+                ),
               ),
-            ),
+
+            Text(record.title.toUpperCase(),
+                style: const TextStyle(color: AppTheme.accentNeonGreen, fontWeight: FontWeight.bold, fontSize: 16)),
+            Text(record.subtitle, style: const TextStyle(color: Colors.white54, fontSize: 12)),
+            const SizedBox(height: 20),
+
+            // Tampilkan input TSS jika belum ada rekomendasi
+            if (record.recommendation == null && !record.isError) ...[
+              const Text("INPUT NILAI TSS (°Brix)",
+                  style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 11)),
+              const SizedBox(height: 12),
+              TextField(
+                controller: tssController,
+                autofocus: true,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(filled: true, fillColor: Colors.black26, hintText: "Contoh: 12.5"),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: AppTheme.accentNeonGreen),
+                  onPressed: () async {
+                    if (tssController.text.isNotEmpty) {
+                      final messenger = ScaffoldMessenger.of(context);
+                      await provider.updateTss(record.id, double.parse(tssController.text));
+                      if (context.mounted) Navigator.pop(context);
+                      messenger.showSnackBar(const SnackBar(
+                          content: Text("Data Terupdate!"), backgroundColor: AppTheme.accentNeonGreen));
+                    }
+                  },
+                  child: const Text("SIMPAN HASIL", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                ),
+              ),
+            ] else if (record.recommendation != null) ...[
+              // Jika sudah ada rekomendasi, tampilkan hasilnya
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppTheme.accentNeonGreen.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    const Text("REKOMENDASI PENGOLAHAN", style: TextStyle(color: Colors.white54, fontSize: 10)),
+                    const SizedBox(height: 8),
+                    Text(record.recommendation!, 
+                      style: const TextStyle(color: AppTheme.accentNeonGreen, fontSize: 18, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+            ],
           ],
         ),
       ),

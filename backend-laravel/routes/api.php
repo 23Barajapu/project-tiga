@@ -11,6 +11,9 @@ Route::get('/pineapple/history', [PineappleController::class, 'getHistory']);
 // Endpoint untuk simulasi (Input 1, 2, 3)
 Route::get('/nanas/status', [PineappleController::class, 'setStatus']);
 
-// Endpoint baru untuk Update TSS dari Flutter
+// Endpoint untuk Update TSS dari Flutter
 Route::post('/pineapple/update-tss/{id}', [PineappleController::class, 'updateTss']);
 Route::post('/nanas/status', [PineappleController::class, 'setStatus']);
+
+// Endpoint baru untuk handle upload foto dari AI
+Route::post('/nanas/upload-foto', [PineappleController::class, 'uploadFoto']);

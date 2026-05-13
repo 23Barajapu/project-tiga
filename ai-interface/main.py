@@ -29,10 +29,10 @@ def koneksi_kamera():
 cap = koneksi_kamera()
 
 # --- 3. KONFIGURASI IP ---
-LAPTOP_IP = "10.102.0.222"
-LARAVEL_API_URL = f"http://{LAPTOP_IP}:8000/api/nanas/status"
+LAPTOP_IP = "10.188.27.109"
+LARAVEL_API_URL = f"http://{LAPTOP_IP}:8001/api/nanas/status"
 # Endpoint baru di Laravel untuk upload foto
-LARAVEL_UPLOAD_URL = f"http://{LAPTOP_IP}:8000/api/nanas/upload-foto" 
+LARAVEL_UPLOAD_URL = f"http://{LAPTOP_IP}:8001/api/nanas/upload-foto" 
 SERVO_URL = "http://nanas-servo.local/move"
 
 COOLDOWN_TIME = 7       

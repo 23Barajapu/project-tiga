@@ -24,8 +24,43 @@ class PineappleController extends Controller
     }
 
     /**
-     * Input dari Python (Hasil Deteksi AI + Upload Foto)
-     * Menggunakan Method POST (Multipart/Form-Data)
+     * Endpoint Baru: Handle Upload Foto & Data dari AI
+     */
+    public function uploadFoto(Request $request)
+    {
+        // 1. Mapping Status (1=MATANG, 3=MENTAH)
+        $inputStatus = $request->input('status');
+        $map = ['1' => 'RIPE', '2' => 'HALF_RIPE', '3' => 'RAW'];
+        $status = $map[$inputStatus] ?? 'UNKNOWN';
+
+        $imagePath = null;
+
+        // 2. Simpan Foto ke Storage
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = ($request->input('pineapple_id') ?? time()) . '.jpg';
+            $imagePath = $file->storeAs('nanas', $filename, 'public');
+        }
+
+        // 3. Simpan ke Database
+        $log = QualityLog::create([
+            'tracking_id'      => $request->input('pineapple_id'),
+            'status'           => $status,
+            'image_url'        => $imagePath,
+            'confidence_score' => rand(850, 990) / 10,
+            'weight'           => rand(100, 200) / 100,
+            'gas_value'        => rand(30, 80),
+            'temperature'      => rand(220, 280) / 10,
+        ]);
+
+        return response()->json([
+            'message' => 'Deteksi AI Berhasil Disimpan',
+            'data'    => $log
+        ], 200);
+    }
+
+    /**
+     * Input dari Python (Hasil Deteksi AI - Versi Lama)
      */
     public function setStatus(Request $request)
     {

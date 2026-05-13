@@ -65,6 +65,9 @@ class QcStateProvider extends ChangeNotifier {
               tss: item['tss'] != null
                   ? double.tryParse(item['tss'].toString())
                   : null,
+              imageUrl: item['image_url'] != null
+                  ? "${baseUrl.replaceAll('/api', '')}/storage/${item['image_url']}"
+                  : null,
             );
           }).toList();
 

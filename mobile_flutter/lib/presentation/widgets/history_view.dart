@@ -9,7 +9,8 @@ class HistoryRecord {
   final String badgeText;
   final bool isError;
   final String? recommendation;
-  final double? tss; // <--- Tambahkan ini
+  final double? tss; 
+  final String? imageUrl; 
 
   HistoryRecord({
     required this.id,
@@ -19,7 +20,8 @@ class HistoryRecord {
     required this.badgeText,
     this.isError = false,
     this.recommendation,
-    this.tss, // <--- Tambahkan ini
+    this.tss, 
+    this.imageUrl, 
   });
 }
 
@@ -40,7 +42,7 @@ class HistoryView extends StatelessWidget {
         
         // LOCK CLICK: Jika sudah ada rekomendasi, onTap dimatikan (null)
         return InkWell(
-          onTap: record.recommendation == null ? () => onTapRecord(record) : null,
+          onTap: () => onTapRecord(record),
           borderRadius: BorderRadius.circular(12),
           child: _buildHistoryItem(record),
         );

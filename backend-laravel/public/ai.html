@@ -40,7 +40,7 @@
                 statusDiv.innerText = "MENGIRIM GRADE " + grade + "...";
                 statusDiv.style.color = "yellow";
 
-                fetch(`http://10.85.204.5:8000/api/nanas/status?status=${grade}`)
+                fetch(`http://192.168.137.123:8001/api/nanas/status?status=${grade}`)
                     .then(res => res.json())
                     .then(data => {
                         statusDiv.innerText = "BERHASIL! Grade: " + data.grade;

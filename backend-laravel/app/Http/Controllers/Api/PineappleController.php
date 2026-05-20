@@ -5,14 +5,27 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\QualityLog; // Pastikan ini mengarah ke model QualityLog yang benar
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class PineappleController extends Controller
 {
-    /**
-     * Ambil status terbaru untuk Dashboard
-     * GET /api/nanas/latest atau /api/pineapple/latest
-     */
+    private function triggerServo(?string $inputStatus): void
+    {
+        $base = env('SERVO_ESP_URL');
+        if (!$base) {
+            return;
+        }
+
+        $status = $inputStatus ?? '1';
+        try {
+            Http::timeout(3)->get(rtrim($base, '/') . '/move', ['status' => $status]);
+        } catch (\Throwable $e) {
+            Log::warning('Servo trigger gagal: ' . $e->getMessage());
+        }
+    }
+
     public function getLatest()
     {
         $latest = QualityLog::latest()->first();
@@ -29,10 +42,38 @@ class PineappleController extends Controller
         return response()->json($logs);
     }
 
-    /**
-     * Input utama dari Python (Hasil Deteksi AI + Upload Foto)
-     * POST /api/nanas/status
-     */
+    public function uploadFoto(Request $request)
+    {
+        $inputStatus = $request->input('status');
+        $map = ['1' => 'RIPE', '2' => 'HALF_RIPE', '3' => 'RAW'];
+        $status = $map[$inputStatus] ?? 'UNKNOWN';
+
+        $imagePath = null;
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = ($request->input('pineapple_id') ?? time()) . '.jpg';
+            $imagePath = $file->storeAs('nanas', $filename, 'public');
+        }
+
+        $log = QualityLog::create([
+            'tracking_id'      => $request->input('pineapple_id'),
+            'status'           => $status,
+            'image_url'        => $imagePath,
+            'confidence_score' => rand(850, 990) / 10,
+            'weight'           => rand(100, 200) / 100,
+            'gas_value'        => rand(30, 80),
+            'temperature'      => rand(220, 280) / 10,
+        ]);
+
+        $this->triggerServo($inputStatus);
+
+        return response()->json([
+            'message' => 'Deteksi AI Berhasil Disimpan',
+            'data'    => $log
+        ], 200);
+    }
+
     public function setStatus(Request $request)
     {
         // 1. Mapping Status dari Python (1=Matang, 3=Mentah)
@@ -60,6 +101,8 @@ class PineappleController extends Controller
             'gas_value'        => rand(30, 80),
             'temperature'      => rand(220, 280) / 10,
         ]);
+
+        $this->triggerServo($inputStatus);
 
         return response()->json([
             'message' => 'Data & Foto Berhasil Disimpan ke Quality Logs',

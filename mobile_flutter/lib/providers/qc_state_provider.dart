@@ -2,15 +2,16 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../config/app_config.dart';
 import '../presentation/widgets/history_view.dart';
 
 class QcStateProvider extends ChangeNotifier {
-// Pakai IP Gateway dari Mobile Hotspot Windows
-final String baseUrl = "http://192.168.137.1:8000/api";
-final String laptopIp = "http://192.168.137.1:8000";
+  final String baseUrl = AppConfig.apiBaseUrl;
 
   bool isLedOn = true;
   bool isScanning = false;
+  bool apiConnected = false;
+  String connectionMessage = 'Menghubungkan ke server...';
 
   double weight = 0.0;
   double voc = 0.0;
@@ -33,9 +34,13 @@ final String laptopIp = "http://192.168.137.1:8000";
 
   Future<void> fetchHistoryData() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/pineapple/history'));
+      final response = await http
+          .get(Uri.parse('$baseUrl/pineapple/history'))
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
+        apiConnected = true;
+        connectionMessage = 'Terhubung · ${AppConfig.laptopIp}:${AppConfig.laravelPort}';
         List<dynamic> data = json.decode(response.body);
 
         if (data.isNotEmpty) {
@@ -70,7 +75,7 @@ final String laptopIp = "http://192.168.137.1:8000";
                   : null,
               // Menyusun URL Gambar menggunakan IP asli laptop agar bisa di-load widget Image.network
               imageUrl: item['image_url'] != null
-                  ? "$laptopIp/storage/${item['image_url']}"
+                  ? "${AppConfig.storageBaseUrl}/storage/${item['image_url']}"
                   : null,
             );
           }).toList();
@@ -104,19 +109,30 @@ final String laptopIp = "http://192.168.137.1:8000";
               .length;
         }
         notifyListeners();
+      } else {
+        apiConnected = false;
+        connectionMessage = 'Server merespons ${response.statusCode}';
+        notifyListeners();
       }
     } catch (e) {
+      apiConnected = false;
+      connectionMessage =
+          'Gagal konek ke ${AppConfig.laptopIp}:${AppConfig.laravelPort}\n'
+          'Pastikan HP & laptop satu WiFi, Laravel jalan, firewall dibuka.';
       print("Error Fetching Data: $e");
+      notifyListeners();
     }
   }
 
   // Fungsi untuk Update TSS dari Flutter
   Future<bool> updateTss(int id, double tssValue) async {
     try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/pineapple/update-tss/$id'),
-        body: {'tss': tssValue.toString()},
-      );
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl/pineapple/update-tss/$id'),
+            body: {'tss': tssValue.toString()},
+          )
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         await fetchHistoryData();
@@ -146,7 +162,9 @@ final String laptopIp = "http://192.168.137.1:8000";
     isScanning = true;
     notifyListeners();
     try {
-      final response = await http.get(Uri.parse('$baseUrl/nanas/status?status=1'));
+      final response = await http
+          .get(Uri.parse('$baseUrl/nanas/status?status=1'))
+          .timeout(const Duration(seconds: 10));
       if (response.statusCode == 200) {
         await fetchHistoryData();
       }

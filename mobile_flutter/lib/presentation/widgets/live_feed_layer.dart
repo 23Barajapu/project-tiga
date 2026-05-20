@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
-import 'package:flutter_mjpeg/flutter_mjpeg.dart';
+import 'mjpeg_live_view.dart';
 
 class LiveFeedLayer extends StatelessWidget {
   final String streamUrl;
@@ -34,11 +34,10 @@ class LiveFeedLayer extends StatelessWidget {
             child: SizedBox(
               width: double.infinity,
               height: double.infinity,
-              child: Mjpeg(
-                isLive: isRunning,
-                stream: streamUrl,
+              child: MjpegLiveView(
+                streamUrl: streamUrl,
                 fit: BoxFit.cover,
-                error: (context, error, stack) {
+                errorBuilder: (context, error) {
                   return const Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

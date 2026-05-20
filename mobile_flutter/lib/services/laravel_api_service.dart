@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import '../config/app_config.dart';
 
 class LaravelApiService {
-  final Dio _dio = Dio();
-  // Assume Laravel is running locally for now
-  final String baseUrl = 'http://127.0.0.1:8001/api'; 
-  
+  final Dio _dio = Dio(BaseOptions(
+    connectTimeout: const Duration(seconds: 10),
+    receiveTimeout: const Duration(seconds: 10),
+  ));
+  final String baseUrl = AppConfig.apiBaseUrl;
+
   // Real implementation will fetch from Laravel API
   // Here we mock the response for demonstration
   // Real implementation fetching from Laravel API
@@ -20,13 +23,14 @@ class LaravelApiService {
           'temperature': double.tryParse(data['temperature'].toString()) ?? 0.0,
           'humidity': 68.0, // Backend might not have humidity in log yet
           'ai_status': data['status'] ?? 'UNKNOWN',
-          'confidence_score': double.tryParse(data['confidence_score'].toString()) ?? 0.0,
+          'confidence_score':
+              double.tryParse(data['confidence_score'].toString()) ?? 0.0,
         };
       }
     } catch (e) {
       print('Error fetching sensor data: $e');
     }
-    
+
     // Fallback if error
     return {
       'weight': 1.28 + (0.05 * (DateTime.now().second % 5)),
@@ -41,12 +45,18 @@ class LaravelApiService {
       final response = await _dio.get('$baseUrl/pineapple/history');
       if (response.statusCode == 200) {
         final List<dynamic> dataList = response.data;
-        return dataList.map((data) => {
-          'grade': data['status'] == 'RIPE' ? 'Grade A' : (data['status'] == 'RAW' ? 'Grade B' : 'Reject'),
-          'status_raw': data['status'],
-          'time': data['created_at'] ?? 'Just now',
-          'confidence_score': double.tryParse(data['confidence_score'].toString()) ?? 0.0,
-        }).toList();
+        return dataList
+            .map((data) => {
+                  'grade': data['status'] == 'RIPE'
+                      ? 'Grade A'
+                      : (data['status'] == 'RAW' ? 'Grade B' : 'Reject'),
+                  'status_raw': data['status'],
+                  'time': data['created_at'] ?? 'Just now',
+                  'confidence_score':
+                      double.tryParse(data['confidence_score'].toString()) ??
+                          0.0,
+                })
+            .toList();
       }
     } catch (e) {
       print('Error fetching history: $e');
@@ -61,10 +71,10 @@ class LaravelApiService {
     // 4. Laravel sends photo to Python ViT AI.
     // 5. Python returns AI result to Laravel.
     // 6. Laravel saves to DB and returns to Flutter.
-    
+
     // Simulating this entire complex workflow latency
-    await Future.delayed(const Duration(seconds: 3)); 
-    
+    await Future.delayed(const Duration(seconds: 3));
+
     return {
       'status': 'success',
       'ai_status': 'Grade A Target / Ripe',

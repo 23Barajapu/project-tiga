@@ -7,19 +7,26 @@
 
 const char* ssid = "aruuu";
 const char* password = "alva123asd";
-const String url = "http://192.168.137.1:8000/api/pineapple/latest";
+const String url = "http://192.168.137.123:8001/api/pineapple/latest";
 
 Servo myservo;
 int servoPin = 27;
 int lastDataId = 0;
+bool baselineSynced = false;
 
 WebServer server(80);
 
+bool isRipeStatus(const String& statusNanas) {
+  return statusNanas == "RIPE" || statusNanas == "HALF_RIPE" ||
+         statusNanas == "1" || statusNanas == "2";
+}
+
 void moveServo(String statusNanas) {
+  statusNanas.trim();
   Serial.println("[Servo] Moving for status: " + statusNanas);
   myservo.attach(servoPin, 500, 2400);
 
-  if (statusNanas == "RIPE" || statusNanas == "1") {
+  if (isRipeStatus(statusNanas)) {
     myservo.write(180);
     delay(450);
     myservo.write(90);
@@ -31,6 +38,7 @@ void moveServo(String statusNanas) {
     delay(400);
   }
   myservo.detach();
+  Serial.println("[Servo] Done.");
 }
 
 void handleMove() {
@@ -40,6 +48,50 @@ void handleMove() {
     moveServo(status);
   } else {
     server.send(400, "text/plain", "Missing Status");
+  }
+}
+
+void pollLaravelForServo() {
+  if (WiFi.status() != WL_CONNECTED) return;
+
+  HTTPClient http;
+  http.setTimeout(5000);
+  http.begin(url);
+  int httpCode = http.GET();
+
+  if (httpCode != 200) {
+    Serial.printf("[Poll] HTTP error: %d\n", httpCode);
+    http.end();
+    return;
+  }
+
+  String payload = http.getString();
+  http.end();
+
+  StaticJsonDocument<512> doc;
+  DeserializationError err = deserializeJson(doc, payload);
+  if (err) {
+    Serial.print("[Poll] JSON error: ");
+    Serial.println(err.c_str());
+    return;
+  }
+
+  int currentId = doc["id"] | 0;
+  String status = doc["status"] | "UNKNOWN";
+
+  if (currentId == 0) return;
+
+  if (!baselineSynced) {
+    lastDataId = currentId;
+    baselineSynced = true;
+    Serial.printf("[Poll] Baseline ID=%d (tidak gerak)\n", lastDataId);
+    return;
+  }
+
+  if (currentId > lastDataId) {
+    lastDataId = currentId;
+    Serial.printf("[Poll] Data baru ID=%d status=%s\n", currentId, status.c_str());
+    moveServo(status);
   }
 }
 
@@ -59,39 +111,25 @@ void setup() {
     Serial.print(".");
   }
   Serial.println("\n[WiFi] Connected!");
-  Serial.print("IP Address: ");
+  Serial.print("[WiFi] IP Address: ");
   Serial.println(WiFi.localIP());
+  Serial.println(">>> Salin IP ini ke SERVO_ESP_IP di main.py <<<");
 
   if (MDNS.begin("nanas-servo")) {
-    Serial.println("[mDNS] nanas-servo.local started");
+    Serial.println("[mDNS] http://nanas-servo.local/move");
   }
 
   server.on("/move", handleMove);
   server.begin();
+  Serial.println("[HTTP] GET /move?status=1 atau 3");
 }
 
 void loop() {
   server.handleClient();
 
-  // Polling tetap ada sebagai backup atau sinkronisasi awal
   static unsigned long lastPoll = 0;
-  if (millis() - lastPoll > 2000) {  // Kurangi frekuensi polling ke 2 detik agar tidak berat
+  if (millis() - lastPoll > 1500) {
     lastPoll = millis();
-    if (WiFi.status() == WL_CONNECTED) {
-      HTTPClient http;
-      http.setTimeout(500);
-      http.begin(url);
-      int httpCode = http.GET();
-      if (httpCode == 200) {
-        StaticJsonDocument<256> doc;
-        deserializeJson(doc, http.getStream());
-        int currentId = doc["id"];
-        if (currentId > lastDataId) {
-          lastDataId = currentId;
-          moveServo(doc["status"]);
-        }
-      }
-      http.end();
-    }
+    pollLaravelForServo();
   }
 }

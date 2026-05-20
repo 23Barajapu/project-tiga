@@ -3,6 +3,7 @@ os.environ["OPENCV_FFMPEG_LOGLEVEL"] = "-8"
 import cv2
 import requests
 import time
+import threading
 from ultralytics import YOLO
 from flask import Flask, Response
 
@@ -18,20 +19,55 @@ except Exception as e:
     exit()
 
 # --- 2. SETUP STREAM ESP32-CAM ---
-ESP32_IP = "192.168.137.66"
+ESP32_IP = "192.168.137.42"
 stream_url = f"http://{ESP32_IP}/mjpeg"
 
-def koneksi_kamera():
-    c = cv2.VideoCapture(stream_url, cv2.CAP_FFMPEG)
-    c.set(cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, 5000)
-    c.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-    return c
+class CameraStream:
+    def __init__(self):
+        self.stream_url = stream_url
+        self.cap = cv2.VideoCapture(self.stream_url, cv2.CAP_FFMPEG)
+        self.cap.set(cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, 5000)
+        self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+        self.frame = None
+        self.running = True
+        self.thread = threading.Thread(target=self.update, daemon=True)
+        self.thread.start()
 
-cap = koneksi_kamera()
+    def update(self):
+        while self.running:
+            try:
+                success, img = self.cap.read()
+                if success and img is not None:
+                    self.frame = img
+                else:
+                    raise Exception("Frame kosong")
+            except Exception as e:
+                print(f"[CAMERA ERROR] Koneksi kamera bermasalah: {e}")
+                try:
+                    self.cap.release()
+                except:
+                    pass
+                time.sleep(2)
+                self.cap = cv2.VideoCapture(self.stream_url, cv2.CAP_FFMPEG)
+                self.cap.set(cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, 5000)
+                self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            time.sleep(0.005)
+
+    def read(self):
+        return self.frame
+
+    def release(self):
+        self.running = False
+        try:
+            self.cap.release()
+        except:
+            pass
+
+camera_stream = CameraStream()
 
 # --- 3. KONFIGURASI IP ---
 LAPTOP_IP = "192.168.137.123"
-SERVO_ESP_IP = "192.168.137.208"
+SERVO_ESP_IP = "192.168.137.242"
 LARAVEL_API_URL = f"http://{LAPTOP_IP}:8001/api/nanas/status"
 LARAVEL_UPLOAD_URL = f"http://{LAPTOP_IP}:8001/api/nanas/upload-foto"
 
@@ -90,22 +126,12 @@ def send_trigger_with_photo(status, label, frame):
         os.remove(filename)
 
 def generate_frames():
-    global cap, pineapple_present, last_send_time, last_seen_time
+    global camera_stream, pineapple_present, last_send_time, last_seen_time
     
     while True:
         time.sleep(0.01)
-        try:
-            success, img = cap.read()
-            if not success or img is None:
-                raise Exception("Frame kosong atau gagal dibaca")
-        except Exception as e:
-            print(f"[CAMERA ERROR] Koneksi kamera bermasalah: {e}")
-            try:
-                cap.release()
-            except:
-                pass
-            time.sleep(2)
-            cap = koneksi_kamera()
+        img = camera_stream.read()
+        if img is None:
             continue
 
         frame = img.copy()

@@ -87,7 +87,7 @@ class _MjpegLiveViewState extends State<MjpegLiveView> {
           buffer.addAll(chunk);
 
           while (true) {
-            final start = _indexOf(buffer, _jpegStart);
+            final start = _indexOf2(buffer, 0xFF, 0xD8);
             if (start < 0) {
               if (buffer.length > 1) {
                 buffer.removeRange(0, buffer.length - 1);
@@ -95,7 +95,7 @@ class _MjpegLiveViewState extends State<MjpegLiveView> {
               break;
             }
 
-            final end = _indexOf(buffer, _jpegEnd, start + 2);
+            final end = _indexOf2(buffer, 0xFF, 0xD9, start + 2);
             if (end < 0) break;
 
             final frame =
@@ -121,18 +121,13 @@ class _MjpegLiveViewState extends State<MjpegLiveView> {
     }
   }
 
-  int _indexOf(List<int> data, List<int> pattern, [int from = 0]) {
-    if (from >= data.length) return -1;
-    final limit = data.length - pattern.length;
-    for (var i = from; i <= limit; i++) {
-      var found = true;
-      for (var j = 0; j < pattern.length; j++) {
-        if (data[i + j] != pattern[j]) {
-          found = false;
-          break;
-        }
+  int _indexOf2(List<int> data, int p0, int p1, [int from = 0]) {
+    if (from >= data.length - 1) return -1;
+    final limit = data.length - 1;
+    for (var i = from; i < limit; i++) {
+      if (data[i] == p0 && data[i + 1] == p1) {
+        return i;
       }
-      if (found) return i;
     }
     return -1;
   }

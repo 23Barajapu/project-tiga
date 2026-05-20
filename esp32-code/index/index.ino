@@ -10,7 +10,7 @@ const char* password = "alva123asd";
 const String url = "http://192.168.137.123:8001/api/pineapple/latest";
 
 Servo myservo;
-int servoPin = 27;
+int servoPin = 26;
 int lastDataId = 0;
 bool baselineSynced = false;
 
@@ -24,7 +24,7 @@ bool isRipeStatus(const String& statusNanas) {
 void moveServo(String statusNanas) {
   statusNanas.trim();
   Serial.println("[Servo] Moving for status: " + statusNanas);
-  myservo.attach(servoPin, 500, 2400);
+  myservo.attach(servoPin);
 
   if (isRipeStatus(statusNanas)) {
     myservo.write(180);

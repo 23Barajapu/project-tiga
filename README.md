@@ -35,8 +35,8 @@ Project ini terdiri dari 4 komponen utama:
 ```dart
 class AppConfig {
   static const String laptopIp = '192.168.137.123';  // ← Ganti dengan IP laptop Anda
-  static const String espCamIp = '192.168.137.156';  // ← Ganti dengan IP ESP32 Camera
-  static const String espServoIp = '192.168.137.155'; // ← Ganti dengan IP ESP32 Servo
+  static const String espCamIp = '192.168.137.42';   // ← Ganti dengan IP ESP32 Camera
+  static const String espServoIp = '192.168.137.242'; // ← Ganti dengan IP ESP32 Servo
   static const int laravelPort = 8001;
   static const int aiStreamPort = 8888;
 }
@@ -57,9 +57,9 @@ const char* password = "alva123asd";     // ← Ganti dengan password WiFi Anda
 
 #### 4. **ai-interface/main.py**
 ```python
-ESP32_IP = "192.168.137.156"             # ← Ganti dengan IP ESP32 Camera
+ESP32_IP = "192.168.137.42"              # ← Ganti dengan IP ESP32 Camera
 LAPTOP_IP = "192.168.137.123"           # ← Ganti dengan IP laptop Anda
-SERVO_ESP_IP = "192.168.137.155"        # ← Ganti dengan IP ESP32 Servo
+SERVO_ESP_IP = "192.168.137.242"        # ← Ganti dengan IP ESP32 Servo
 ```
 
 #### 5. **backend-laravel/.env**
@@ -73,7 +73,7 @@ DB_PASSWORD=                             # ← Ganti dengan password MySQL Anda
 
 **Catatan:** Tambahkan juga baris berikut di `.env` jika belum ada:
 ```env
-SERVO_ESP_URL=http://192.168.137.155     # ← Ganti dengan IP ESP32 Servo
+SERVO_ESP_URL=http://192.168.137.242     # ← Ganti dengan IP ESP32 Servo
 ```
 
 ## 🚀 Cara Menjalankan Project
@@ -160,7 +160,7 @@ AI Interface akan berjalan di: `http://localhost:8888` atau `http://192.168.137.
 6. Pilih COM port yang sesuai
 7. Upload sketch
 8. Buka Serial Monitor (baud rate: 115200)
-9. Catat IP address yang muncul (contoh: `192.168.137.156`)
+9. Catat IP address yang muncul (contoh: `192.168.137.42`)
 10. Update IP ini di file konfigurasi lainnya
 
 #### ESP32 Servo (index.ino)
@@ -170,7 +170,7 @@ AI Interface akan berjalan di: `http://localhost:8888` atau `http://192.168.137.
 4. Pilih COM port yang sesuai
 5. Upload sketch
 6. Buka Serial Monitor (baud rate: 115200)
-7. Catat IP address yang muncul (contoh: `192.168.137.155`)
+7. Catat IP address yang muncul (contoh: `192.168.137.242`)
 8. Update IP ini di file konfigurasi lainnya
 
 ### Step 5: Setup Mobile Flutter
@@ -206,12 +206,12 @@ Buka browser:
 
 ### 3. Test ESP32 Camera
 Buka browser:
-- `http://192.168.137.156/mjpeg` - harus menampilkan stream MJPEG dari kamera (ganti IP dengan IP ESP32 Camera Anda)
+- `http://192.168.137.42/mjpeg` - harus menampilkan stream MJPEG dari kamera (ganti IP dengan IP ESP32 Camera Anda)
 
 ### 4. Test ESP32 Servo
 Buka browser:
-- `http://192.168.137.155/move?status=1` - servo harus bergerak ke posisi "matang"
-- `http://192.168.137.155/move?status=3` - servo harus bergerak ke posisi "mentah"
+- `http://192.168.137.242/move?status=1` - servo harus bergerak ke posisi "matang"
+- `http://192.168.137.242/move?status=3` - servo harus bergerak ke posisi "mentah"
 
 ### 5. Test Mobile App
 - Buka aplikasi Flutter

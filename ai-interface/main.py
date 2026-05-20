@@ -1,7 +1,8 @@
+import os
+os.environ["OPENCV_FFMPEG_LOGLEVEL"] = "-8"
 import cv2
 import requests
 import time
-import os
 from ultralytics import YOLO
 from flask import Flask, Response
 
@@ -17,7 +18,7 @@ except Exception as e:
     exit()
 
 # --- 2. SETUP STREAM ESP32-CAM ---
-ESP32_IP = "192.168.137.156"
+ESP32_IP = "192.168.137.66"
 stream_url = f"http://{ESP32_IP}/mjpeg"
 
 def koneksi_kamera():
@@ -30,7 +31,7 @@ cap = koneksi_kamera()
 
 # --- 3. KONFIGURASI IP ---
 LAPTOP_IP = "192.168.137.123"
-SERVO_ESP_IP = "192.168.137.155"
+SERVO_ESP_IP = "192.168.137.208"
 LARAVEL_API_URL = f"http://{LAPTOP_IP}:8001/api/nanas/status"
 LARAVEL_UPLOAD_URL = f"http://{LAPTOP_IP}:8001/api/nanas/upload-foto"
 
@@ -49,7 +50,7 @@ def trigger_servo(status):
     for url in urls:
         try:
             print(f"[SERVO] Trigger {url} ...")
-            res = requests.get(url, timeout=3.0)
+            res = requests.get(url, timeout=10.0)
             if res.status_code == 200:
                 print(f"[SERVO] OK — servo bergerak")
                 return True
@@ -76,7 +77,7 @@ def send_trigger_with_photo(status, label, frame):
                 'label': label,
                 'pineapple_id': pineapple_id # ID unik untuk track nanas
             }
-            response = requests.post(LARAVEL_UPLOAD_URL, files=files, data=data, timeout=3.0)
+            response = requests.post(LARAVEL_UPLOAD_URL, files=files, data=data, timeout=10.0)
             if response.status_code == 200:
                 print(f"[SUCCESS] {pineapple_id} uploaded to Database")
     except Exception as e:
@@ -93,10 +94,16 @@ def generate_frames():
     
     while True:
         time.sleep(0.01)
-        success, img = cap.read()
-        
-        if not success:
-            cap.release()
+        try:
+            success, img = cap.read()
+            if not success or img is None:
+                raise Exception("Frame kosong atau gagal dibaca")
+        except Exception as e:
+            print(f"[CAMERA ERROR] Koneksi kamera bermasalah: {e}")
+            try:
+                cap.release()
+            except:
+                pass
             time.sleep(2)
             cap = koneksi_kamera()
             continue

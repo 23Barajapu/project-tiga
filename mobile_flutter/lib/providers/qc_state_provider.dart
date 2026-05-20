@@ -5,8 +5,9 @@ import 'package:http/http.dart' as http;
 import '../presentation/widgets/history_view.dart';
 
 class QcStateProvider extends ChangeNotifier {
-  // IP Laptop kamu - Pastikan Laravel sudah running di IP ini
-  final String baseUrl = "http://10.102.0.222:8000/api";
+// Pakai IP Gateway dari Mobile Hotspot Windows
+final String baseUrl = "http://192.168.137.1:8000/api";
+final String laptopIp = "http://192.168.137.1:8000";
 
   bool isLedOn = true;
   bool isScanning = false;
@@ -19,7 +20,6 @@ class QcStateProvider extends ChangeNotifier {
   String aiStatus = 'WAITING...';
   double confidenceScore = 0.0;
 
-  // Hanya tampilkan 2 kategori utama sesuai request
   int ripeCount = 0;
   int unripeCount = 0;
 
@@ -39,9 +39,10 @@ class QcStateProvider extends ChangeNotifier {
         List<dynamic> data = json.decode(response.body);
 
         if (data.isNotEmpty) {
-          // 1. Mapping SELURUH data dari database tanpa limit
+          // 1. Mapping data dari database ke format HistoryRecord
           List<HistoryRecord> allRecords = data.map((item) {
-            String statusRaw = item['status'] ?? 'UNKNOWN';
+            // Normalkan status menjadi huruf besar untuk menghindari case-sensitive (RIPE / RAW)
+            String statusRaw = (item['status'] ?? 'UNKNOWN').toString().toUpperCase();
             String gradeText = "";
             bool isError = false;
 
@@ -50,13 +51,15 @@ class QcStateProvider extends ChangeNotifier {
             } else if (statusRaw == 'HALF_RIPE') {
               gradeText = "Grade B - Setengah";
             } else {
+              // Status 'RAW' dari database otomatis masuk ke sini
               gradeText = "Grade C - Mentah";
               isError = true;
             }
 
             return HistoryRecord(
               id: item['id'],
-              title: gradeText,
+              // Tampilkan Tracking ID (PINE-xxxx) sebagai judul utama di card agar tidak tertukar
+              title: item['tracking_id'] ?? "Scan #${item['id']}",
               time: item['created_at'].toString().substring(11, 16),
               subtitle: 'Confidence: ${item['confidence_score']}%',
               badgeText: '${item['confidence_score']}% Match',
@@ -65,19 +68,21 @@ class QcStateProvider extends ChangeNotifier {
               tss: item['tss'] != null
                   ? double.tryParse(item['tss'].toString())
                   : null,
+              // Menyusun URL Gambar menggunakan IP asli laptop agar bisa di-load widget Image.network
               imageUrl: item['image_url'] != null
-                  ? "${baseUrl.replaceAll('/api', '')}/storage/${item['image_url']}"
+                  ? "$laptopIp/storage/${item['image_url']}"
                   : null,
             );
           }).toList();
 
-          // 2. TAMPILAN DASHBOARD: Tetap limit 10 agar UI tidak berat/lag
-          // Tapi data perhitungan (ripe/unripe) tetap pakai 'data' yang lengkap
+          // 2. TAMPILAN DASHBOARD: Batasi maksimal 10 data terbaru
           historyLogs = allRecords.take(10).toList();
 
-          // 3. Update Dashboard Stats (Berdasarkan data terbaru/indeks 0)
+          // 3. Update Real-time Dashboard Stats (Berdasarkan indeks 0)
           var latest = data.first;
-          aiStatus = (latest['status'] == 'RIPE' || latest['status'] == 'HALF_RIPE')
+          String latestStatus = (latest['status'] ?? '').toString().toUpperCase();
+          
+          aiStatus = (latestStatus == 'RIPE' || latestStatus == 'HALF_RIPE')
                   ? 'MATANG'
                   : 'MENTAH';
 
@@ -87,8 +92,7 @@ class QcStateProvider extends ChangeNotifier {
           temperature = double.tryParse(latest['temperature'].toString()) ?? 0.0;
           humidity = 65.0; 
 
-          // 4. HITUNG REAL STATS (Dari 757 data database)
-          // Ini yang bikin angka di Analytics Card kamu akurat
+          // 4. HITUNG REAL STATS KESELURUHAN (Analytics Card)
           ripeCount = data
               .where((item) =>
                   item['status'] == 'RIPE' || item['status'] == 'HALF_RIPE')
@@ -105,6 +109,7 @@ class QcStateProvider extends ChangeNotifier {
       print("Error Fetching Data: $e");
     }
   }
+
   // Fungsi untuk Update TSS dari Flutter
   Future<bool> updateTss(int id, double tssValue) async {
     try {
@@ -114,7 +119,6 @@ class QcStateProvider extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        // Refresh data agar list history langsung terupdate visualnya
         await fetchHistoryData();
         return true;
       }
@@ -126,7 +130,7 @@ class QcStateProvider extends ChangeNotifier {
   }
 
   void _startPolling() {
-    // Polling setiap 3 detik untuk sinkronisasi data otomatis
+    // Polling berkala setiap 3 detik
     _pollingTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
       fetchHistoryData();
     });
@@ -142,8 +146,7 @@ class QcStateProvider extends ChangeNotifier {
     isScanning = true;
     notifyListeners();
     try {
-      final response =
-          await http.get(Uri.parse('$baseUrl/nanas/status?status=1'));
+      final response = await http.get(Uri.parse('$baseUrl/nanas/status?status=1'));
       if (response.statusCode == 200) {
         await fetchHistoryData();
       }

@@ -17,7 +17,7 @@ except Exception as e:
     exit()
 
 # --- 2. SETUP STREAM ESP32-CAM ---
-ESP32_IP = "192.168.137.182" 
+ESP32_IP = "192.168.137.94" 
 stream_url = f"http://{ESP32_IP}/mjpeg" 
 
 def koneksi_kamera():
@@ -29,12 +29,14 @@ def koneksi_kamera():
 cap = koneksi_kamera()
 
 # --- 3. KONFIGURASI IP ---
-LAPTOP_IP = "10.188.27.109"
-LARAVEL_API_URL = f"http://{LAPTOP_IP}:8001/api/nanas/status"
-# Endpoint baru di Laravel untuk upload foto
-LARAVEL_UPLOAD_URL = f"http://{LAPTOP_IP}:8001/api/nanas/upload-foto" 
-SERVO_URL = "http://nanas-servo.local/move"
 
+# 1. Pastikan IP ke Laravel tetap pakai localhost agar lolos dari Firewall
+LAPTOP_IP = "127.0.0.1"
+LARAVEL_API_URL = f"http://{LAPTOP_IP}:8000/api/nanas/status"
+LARAVEL_UPLOAD_URL = f"http://{LAPTOP_IP}:8000/api/nanas/upload-foto"
+
+# 2. Masukkan IP asli ESP32 yang baru kita dapat dari Serial Monitor!
+SERVO_URL = "http://192.168.137.218/move"
 COOLDOWN_TIME = 7       
 pineapple_present = False 
 last_send_time = 0      
@@ -137,3 +139,4 @@ def video_feed():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8888, threaded=True, debug=False)
+    

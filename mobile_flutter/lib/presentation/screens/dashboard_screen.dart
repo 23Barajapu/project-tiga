@@ -172,7 +172,7 @@ class DashboardScreen extends StatelessWidget {
               child: Mjpeg(
                 isLive: true,
                 // Menggunakan IP laptop yang sama
-                stream: 'http://10.188.27.109:8888/video_feed',
+                stream: 'http://10.102.0.42:8888/video_feed',
                 fit: BoxFit.cover,
                 error: (context, error, stack) => Column(
                   mainAxisAlignment: MainAxisAlignment.center,

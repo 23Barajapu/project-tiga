@@ -119,9 +119,10 @@ def send_trigger_with_photo(status, label, frame):
     except Exception as e:
         print(f"[DB ERROR] Gagal upload: {e}")
 
-    # 2. Trigger servo setelah data tersimpan
-    trigger_servo(status)
+    # 2. Servo dikendalikan oleh Laravel (uploadFoto memanggil triggerServo).
+    # Tidak perlu trigger servo di sini agar tidak bergerak dua kali.
     
+
     if os.path.exists(filename):
         os.remove(filename)
 

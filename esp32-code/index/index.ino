@@ -127,9 +127,14 @@ void setup() {
 void loop() {
   server.handleClient();
 
-  static unsigned long lastPoll = 0;
-  if (millis() - lastPoll > 1500) {
-    lastPoll = millis();
-    pollLaravelForServo();
-  }
+  // [DIMATIKAN] Polling otomatis dinonaktifkan.
+  // ESP32 sekarang HANYA bergerak jika menerima request langsung ke /move?status=X
+  // dari Laravel (via PineappleController::triggerServo()).
+  // Polling dua jalur inilah yang menyebabkan servo bergerak DUA KALI.
+  //
+  // static unsigned long lastPoll = 0;
+  // if (millis() - lastPoll > 1500) {
+  //   lastPoll = millis();
+  //   pollLaravelForServo();
+  // }
 }

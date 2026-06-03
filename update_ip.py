@@ -37,7 +37,11 @@ if __name__ == "__main__":
     update_file(ai_file, r'LAPTOP_IP\s*=\s*"[^"]+"', f'LAPTOP_IP = "{laptop_ip}"')
     update_file(ai_file, r'SERVO_ESP_IP\s*=\s*"[^"]+"', f'SERVO_ESP_IP = "{esp_servo_ip}"')
 
-    # 3. Update Laravel
+    # 3. Update ESP32 Servo
+    servo_file = "esp32-code/index/index.ino"
+    update_file(servo_file, r'const String url = "http://[^:]+:8001', f'const String url = "http://{laptop_ip}:8001')
+
+    # 4. Update Laravel
     env_file = "backend-laravel/.env"
     update_file(env_file, r'SERVO_ESP_URL=http://[^\s]+', f'SERVO_ESP_URL=http://{esp_servo_ip}')
 

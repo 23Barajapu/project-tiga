@@ -50,7 +50,7 @@ python update_ip.py 192.168.137.185 192.168.137.130 192.168.137.228
 Script ini akan otomatis mengubah IP di semua file yang membutuhkan:
 1. `mobile_flutter/lib/config/app_config.dart`
 2. `ai-interface/main.py`
-3. `esp32-code/index/index.ino`
+3. `esp32-code/index/index.ino` *(Catatan: update url API Laravel, meski fitur polling saat ini dinonaktifkan di kode ESP32)*
 4. `backend-laravel/.env`
 
 *(Catatan: ESP32 Camera (`cam.ino`) tetap perlu koneksi WiFi manual di baris kodenya).*

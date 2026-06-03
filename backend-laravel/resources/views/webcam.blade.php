@@ -22,7 +22,7 @@
         if (grade) {
             document.getElementById('status-display').innerText = "Mendeteksi Grade " + grade + "...";
             // Tembak API Laravel yang sudah kita buat tadi
-            fetch(`http://192.168.137.123:8001/api/nanas/status?status=${grade}`)
+            fetch(`/api/nanas/status?status=${grade}`)
                 .then(res => res.json())
                 .then(data => {
                     document.getElementById('status-display').innerText = "Tersimpan: " + data.grade;

@@ -29,68 +29,26 @@ Project ini terdiri dari 4 komponen utama:
 
 ## 📝 Konfigurasi IP
 
-### File yang harus diubah IP-nya:
+### Cara Cepat Update IP:
 
-#### 1. **mobile_flutter/lib/config/app_config.dart**
-```dart
-class AppConfig {
-  static const String laptopIp = '192.168.137.123';  // ← Ganti dengan IP laptop Anda
-  static const String espCamIp = '192.168.137.42';   // ← Ganti dengan IP ESP32 Camera
-  static const String espServoIp = '192.168.137.242'; // ← Ganti dengan IP ESP32 Servo
-  static const int laravelPort = 8001;
-  static const int aiStreamPort = 8888;
-}
+Jalankan script Python berikut di terminal (pastikan berada di folder `project-3`):
+
+```bash
+python update_ip.py <IP_LAPTOP> <IP_ESP_CAMERA> <IP_ESP_SERVO>
 ```
 
-#### 2. **esp32-code/index/index.ino** (ESP32 Servo)
-```cpp
-const char* ssid = "aruuu";              // ← Ganti dengan nama WiFi Anda
-const char* password = "alva123asd";     // ← Ganti dengan password WiFi Anda
-const String url = "http://192.168.137.123:8001/api/pineapple/latest"; // ← Ganti dengan IP laptop
+**Contoh:**
+```bash
+python update_ip.py 192.168.137.185 192.168.137.130 192.168.137.228
 ```
 
-#### 3. **esp32-code/cam/cam.ino** (ESP32 Camera)
-```cpp
-const char* ssid = "aruuu";              // ← Ganti dengan nama WiFi Anda
-const char* password = "alva123asd";     // ← Ganti dengan password WiFi Anda
-```
+Script ini akan otomatis mengubah IP di semua file yang membutuhkan:
+1. `mobile_flutter/lib/config/app_config.dart`
+2. `ai-interface/main.py`
+3. `esp32-code/index/index.ino`
+4. `backend-laravel/.env`
 
-#### 4. **ai-interface/main.py**
-```python
-ESP32_IP = "192.168.137.42"              # ← Ganti dengan IP ESP32 Camera
-LAPTOP_IP = "192.168.137.123"           # ← Ganti dengan IP laptop Anda
-SERVO_ESP_IP = "192.168.137.242"        # ← Ganti dengan IP ESP32 Servo
-```
-
-#### 5. **backend-laravel/.env**
-```env
-DB_HOST=127.0.0.1                        # ← Ganti jika database di server lain
-DB_PORT=3306
-DB_DATABASE=project-3                    # ← Sesuaikan nama database
-DB_USERNAME=root                         # ← Ganti dengan username MySQL Anda
-DB_PASSWORD=                             # ← Ganti dengan password MySQL Anda
-```
-
-**Catatan:** Tambahkan juga baris berikut di `.env` jika belum ada:
-```env
-SERVO_ESP_URL=http://192.168.137.242     # ← Ganti dengan IP ESP32 Servo
-```
-
-#### 6. **backend-laravel/resources/views/webcam.blade.php**
-```javascript
-fetch(`http://192.168.137.123:8001/api/nanas/status?status=${grade}`) // ← Ganti dengan IP laptop
-```
-
-#### 7. **backend-laravel/public/ai.html**
-```javascript
-fetch(`http://192.168.137.123:8001/api/nanas/status?status=${grade}`) // ← Ganti dengan IP laptop
-```
-
-#### 8. **mobile_flutter/android/app/src/main/res/xml/network_security_config.xml**
-```xml
-<domain includeSubdomains="true">192.168.137.123</domain> <!-- ← Ganti dengan IP laptop -->
-<domain includeSubdomains="true">192.168.137.42</domain> <!-- ← Ganti dengan IP ESP32 Camera -->
-```
+*(Catatan: ESP32 Camera (`cam.ino`) tetap perlu koneksi WiFi manual di baris kodenya).*
 
 ## 🚀 Cara Menjalankan Project
 

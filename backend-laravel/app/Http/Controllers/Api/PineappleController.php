@@ -20,7 +20,7 @@ class PineappleController extends Controller
 
         $status = $inputStatus ?? '1';
         try {
-            Http::timeout(3)->get(rtrim($base, '/') . '/move', ['status' => $status]);
+            Http::timeout(10)->get(rtrim($base, '/') . '/move', ['status' => $status]);
         } catch (\Throwable $e) {
             Log::warning('Servo trigger gagal: ' . $e->getMessage());
         }

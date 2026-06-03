@@ -76,6 +76,22 @@ DB_PASSWORD=                             # ← Ganti dengan password MySQL Anda
 SERVO_ESP_URL=http://192.168.137.242     # ← Ganti dengan IP ESP32 Servo
 ```
 
+#### 6. **mobile_flutter/android/app/src/main/res/xml/network_security_config.xml**
+```xml
+        <domain includeSubdomains="true">192.168.137.123</domain> <!-- ← Ganti dengan IP laptop -->
+        <domain includeSubdomains="true">192.168.137.42</domain>  <!-- ← Ganti dengan IP ESP32 Camera -->
+```
+
+#### 7. **backend-laravel/resources/views/webcam.blade.php**
+```javascript
+            fetch(`http://192.168.137.123:8001/api/nanas/status?status=${grade}`) // ← Ganti dengan IP laptop
+```
+
+#### 8. **backend-laravel/public/ai.html**
+```javascript
+                fetch(`http://192.168.137.123:8001/api/nanas/status?status=${grade}`) // ← Ganti dengan IP laptop
+```
+
 ## 🚀 Cara Menjalankan Project
 
 ### Step 1: Setup Database

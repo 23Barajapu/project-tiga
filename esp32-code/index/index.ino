@@ -7,7 +7,7 @@
 
 const char* ssid = "aruuu";
 const char* password = "alva123asd";
-const String url = "http://192.168.137.123:8001/api/pineapple/latest";
+const String url = "http://192.168.137.185:8001/api/pineapple/latest";
 
 Servo myservo;
 int servoPin = 26;

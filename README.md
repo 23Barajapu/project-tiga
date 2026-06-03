@@ -37,6 +37,11 @@ Jalankan script Python berikut di terminal (pastikan berada di folder `project-3
 python update_ip.py <IP_LAPTOP> <IP_ESP_CAMERA> <IP_ESP_SERVO>
 ```
 
+**Keterangan Urutan:**
+1. `<IP_LAPTOP>`: IP address dari laptop Anda.
+2. `<IP_ESP_CAMERA>`: IP address dari ESP32 Camera.
+3. `<IP_ESP_SERVO>`: IP address dari ESP32 Servo.
+
 **Contoh:**
 ```bash
 python update_ip.py 192.168.137.185 192.168.137.130 192.168.137.228

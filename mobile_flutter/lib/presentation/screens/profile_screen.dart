@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../theme/app_theme.dart';
 import '../widgets/custom_bottom_nav.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
+
+  Future<void> _openMap() async {
+    final Uri url = Uri.parse('https://maps.google.com/?q=-6.675639,107.674917');
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      debugPrint('Could not launch map');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +80,7 @@ class ProfileScreen extends StatelessWidget {
             
             const SizedBox(height: 25),
             _buildProfileItem(Icons.business_center, 'Usaha', 'Kebun Nanas Simadu'),
-            _buildProfileItem(Icons.location_on, 'Lokasi', 'Jalancagak, Subang, Jawa Barat'),
+            _buildProfileItem(Icons.location_on, 'Lokasi', 'Jalancagak, Subang, Jawa Barat\n6°40\'32.3"S 107°40\'29.7"E', onTap: _openMap),
           ],
         ),
       ),
@@ -80,22 +88,40 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileItem(IconData icon, String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-      child: Row(
-        children: [
-          Icon(icon, color: AppTheme.accentNeonGreen, size: 20),
-          const SizedBox(width: 20),
-          Column(
+  Widget _buildProfileItem(IconData icon, String label, String value, {VoidCallback? onTap}) {
+    Widget content = Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, color: AppTheme.accentNeonGreen, size: 20),
+        const SizedBox(width: 20),
+        Expanded(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(label, style: const TextStyle(color: Colors.white38, fontSize: 12)),
               Text(value, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+              if (onTap != null)
+                const Padding(
+                  padding: EdgeInsets.only(top: 8.0),
+                  child: Row(
+                    children: [
+                      Icon(Icons.map, color: Colors.blue, size: 14),
+                      SizedBox(width: 4),
+                      Text('Lihat Peta (Gmaps)', style: TextStyle(color: Colors.blue, fontSize: 12, fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                    ],
+                  ),
+                ),
             ],
           ),
-        ],
-      ),
+        ),
+      ],
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+      child: onTap != null 
+          ? InkWell(onTap: onTap, child: content) 
+          : content,
     );
   }
 }

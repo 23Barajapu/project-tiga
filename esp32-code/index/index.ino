@@ -7,7 +7,7 @@
 
 const char* ssid = "aruuu";
 const char* password = "alva123asd";
-const String url = "http://192.168.137.185:8001/api/pineapple/latest";
+const String url = "http://127.0.0.1:8001/api/pineapple/latest";
 
 Servo myservo;
 int servoPin = 26;
@@ -27,15 +27,15 @@ void moveServo(String statusNanas) {
   myservo.attach(servoPin);
 
   if (isRipeStatus(statusNanas)) {
-    myservo.write(180);
-    delay(450);
+    myservo.write(135); // Jangan 180 (rawan macet)
+    delay(1000);
     myservo.write(90);
-    delay(400);
+    delay(500);
   } else {
-    myservo.write(0);
-    delay(450);
+    myservo.write(45);  // Jangan 0 (rawan macet)
+    delay(1000);
     myservo.write(90);
-    delay(400);
+    delay(500);
   }
   myservo.detach();
   Serial.println("[Servo] Done.");

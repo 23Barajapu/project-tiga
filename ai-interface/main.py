@@ -19,7 +19,7 @@ except Exception as e:
     exit()
 
 # --- 2. SETUP STREAM ESP32-CAM ---
-ESP32_IP = "192.168.137.130"
+ESP32_IP = "192.168.1.100"
 stream_url = f"http://{ESP32_IP}/mjpeg"
 
 class CameraStream:
@@ -66,8 +66,8 @@ class CameraStream:
 camera_stream = CameraStream()
 
 # --- 3. KONFIGURASI IP ---
-LAPTOP_IP = "192.168.137.185"
-SERVO_ESP_IP = "192.168.137.228"
+LAPTOP_IP = "127.0.0.1"
+SERVO_ESP_IP = "192.168.1.200"
 LARAVEL_API_URL = f"http://{LAPTOP_IP}:8001/api/nanas/status"
 LARAVEL_UPLOAD_URL = f"http://{LAPTOP_IP}:8001/api/nanas/upload-foto"
 

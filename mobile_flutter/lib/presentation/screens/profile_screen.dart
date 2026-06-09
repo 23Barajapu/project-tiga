@@ -10,14 +10,14 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppTheme.primaryBackground,
       appBar: AppBar(
-        title: const Text('Profile Senara', style: TextStyle(color: AppTheme.accentNeonGreen, fontWeight: FontWeight.bold)),
+        title: const Text('Profil Mitra', style: TextStyle(color: AppTheme.accentNeonGreen, fontWeight: FontWeight.bold)),
         backgroundColor: AppTheme.primaryBackground,
         elevation: 0,
         iconTheme: const IconThemeData(color: AppTheme.accentNeonGreen),
       ),
-      body: Center(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 20),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const CircleAvatar(
               radius: 50,
@@ -25,8 +25,8 @@ class ProfileScreen extends StatelessWidget {
               child: Icon(Icons.person, size: 50, color: Colors.black),
             ),
             const SizedBox(height: 20),
-            Text('Dadhe', style: Theme.of(context).textTheme.displayMedium),
-            const Text('Owner of Senara', style: TextStyle(color: AppTheme.accentNeonGreen)),
+            Text('Bapak Toto', style: Theme.of(context).textTheme.displayMedium),
+            const Text('Pemilik Kebun Nanas Simadu', style: TextStyle(color: AppTheme.accentNeonGreen)),
             const SizedBox(height: 30),
             
             // Info Brand Section
@@ -45,18 +45,24 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       Icon(Icons.eco, color: AppTheme.accentNeonGreen, size: 20),
                       SizedBox(width: 10),
-                      Text('TENTANG SENARA', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white)),
+                      Text('TENTANG MITRA', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white)),
                     ],
                   ),
                   const SizedBox(height: 12),
                   const Text(
-                    'Senara merupakan brand kosmetik inovatif yang memanfaatkan buah nanas sebagai bahan baku utama. Didirikan oleh Bapak Dadhe untuk meningkatkan nilai tambah komoditas lokal Subang.',
+                    'Mitra dalam pengembangan sistem ini adalah usaha perkebunan nanas milik Bapak Toto yang bergerak di bidang budidaya dan pengelolaan buah nanas, khususnya nanas Simadu. Kebun nanas ini berlokasi di daerah Jalancagak, Kabupaten Subang dengan titik koordinat 6°40\'32.3"S 107°40\'29.7"E. Dalam menjalankan usahanya, mitra bertanggung jawab dalam menjaga kualitas hasil panen, meningkatkan produktivitas kebun, serta memastikan buah nanas yang dihasilkan memiliki kualitas yang baik sebelum dipasarkan kepada konsumen.',
                     textAlign: TextAlign.justify,
                     style: TextStyle(color: Colors.white70, fontSize: 13, height: 1.5),
                   ),
                   const SizedBox(height: 10),
                   const Text(
-                    'Selain kosmetik, Senara juga merambah ke sektor kuliner dengan produk seperti saus, jus, dan cuka nanas. Usaha ini hadir sebagai solusi bagi petani lokal dalam mendistribusikan hasil panen secara berkelanjutan.',
+                    'Sebelum terjun ke bidang pertanian, Bapak Toto memiliki latar belakang di bidang Teknologi Informasi (IT) dengan aktivitas membuka kursus komputer di rumah dan mengajar di beberapa sekolah sekitar. Namun, sejak pandemi COVID-19 tahun 2020 yang membatasi aktivitas tatap muka, beliau mulai mengembangkan usaha di bidang pertanian dengan fokus pada budidaya nanas karena memiliki ketertarikan yang besar terhadap buah tersebut. Dalam proses budidayanya, beliau menemukan bahwa nanas Simadu termasuk jenis nanas yang cukup langka di wilayah Subang. Dari sekitar 90 tanaman nanas yang dibudidayakan, hanya sekitar 5 buah yang berhasil tumbuh menjadi nanas Simadu.',
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(color: Colors.white70, fontSize: 13, height: 1.5),
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    'Melalui berbagai percobaan dan penelitian sederhana, Bapak Toto melakukan pengambilan sampel tanah dari tanaman nanas Simadu dan melakukan konsultasi dengan beberapa ahli untuk mengetahui faktor yang memengaruhi kualitas pertumbuhan buah. Dari hasil penelitian tersebut ditemukan kombinasi atau ramuan khusus yang mampu meningkatkan produksi nanas Simadu secara signifikan. Hasilnya, jumlah produksi nanas Simadu meningkat menjadi sekitar 90 buah dari total tanaman yang dibudidayakan. Saat ini, mitra telah memiliki kebun nanas dengan lahan yang cukup luas dan produktif, dengan masa panen tanaman nanas sekitar 7 bulan hingga siap dipanen.',
                     textAlign: TextAlign.justify,
                     style: TextStyle(color: Colors.white70, fontSize: 13, height: 1.5),
                   ),
@@ -65,8 +71,8 @@ class ProfileScreen extends StatelessWidget {
             ),
             
             const SizedBox(height: 25),
-            _buildProfileItem(Icons.business_center, 'Brand', 'Senara - Pineapple Innovation'),
-            _buildProfileItem(Icons.location_on, 'Location', 'Subang, West Java, Indonesia'),
+            _buildProfileItem(Icons.business_center, 'Usaha', 'Kebun Nanas Simadu'),
+            _buildProfileItem(Icons.location_on, 'Lokasi', 'Jalancagak, Subang, Jawa Barat'),
           ],
         ),
       ),

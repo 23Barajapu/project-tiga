@@ -24,8 +24,6 @@ class MjpegLiveView extends StatefulWidget {
 }
 
 class _MjpegLiveViewState extends State<MjpegLiveView> {
-  static const _jpegStart = [0xFF, 0xD8];
-  static const _jpegEnd = [0xFF, 0xD9];
 
   Uint8List? _frame;
   Object? _error;

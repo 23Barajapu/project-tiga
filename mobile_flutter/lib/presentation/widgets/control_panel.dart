@@ -22,7 +22,7 @@ class ControlPanel extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppTheme.cardBackground,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.accentNeonGreen.withOpacity(0.1)),
+        border: Border.all(color: AppTheme.accentNeonGreen.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,7 +37,7 @@ class ControlPanel extends StatelessWidget {
             child: ElevatedButton(
               onPressed: isScanning ? null : onTriggerScan,
               style: ElevatedButton.styleFrom(
-                shadowColor: AppTheme.accentNeonGreen.withOpacity(0.5),
+                shadowColor: AppTheme.accentNeonGreen.withValues(alpha: 0.5),
                 elevation: 8,
               ),
               child: isScanning 
@@ -66,7 +66,7 @@ class ControlPanel extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: AppTheme.primaryBackground.withOpacity(0.5),
+              color: AppTheme.primaryBackground.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -78,7 +78,7 @@ class ControlPanel extends StatelessWidget {
                 Switch(
                   value: isLedOn,
                   onChanged: onLedToggled,
-                  activeColor: Colors.amber,
+                  activeThumbColor: Colors.amber,
                 ),
               ],
             ),

@@ -71,9 +71,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       margin: const EdgeInsets.only(bottom: 16),
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                       decoration: BoxDecoration(
-                        color: Colors.orange.withOpacity(0.1),
+                        color: Colors.orange.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                        border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
                       ),
                       child: Row(
                         children: [
@@ -119,20 +119,20 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       decoration: BoxDecoration(
                         color: AppTheme.cardBackground,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppTheme.accentNeonGreen.withOpacity(0.15)),
+                        border: Border.all(color: AppTheme.accentNeonGreen.withValues(alpha: 0.15)),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: _currentPage > 1 ? AppTheme.accentNeonGreen.withOpacity(0.1) : Colors.transparent,
+                              backgroundColor: _currentPage > 1 ? AppTheme.accentNeonGreen.withValues(alpha: 0.1) : Colors.transparent,
                               foregroundColor: _currentPage > 1 ? AppTheme.accentNeonGreen : Colors.white24,
                               elevation: 0,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 side: BorderSide(
-                                  color: _currentPage > 1 ? AppTheme.accentNeonGreen.withOpacity(0.3) : Colors.white10,
+                                  color: _currentPage > 1 ? AppTheme.accentNeonGreen.withValues(alpha: 0.3) : Colors.white10,
                                 ),
                               ),
                             ),
@@ -154,13 +154,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
                           ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: _currentPage < totalPages ? AppTheme.accentNeonGreen.withOpacity(0.1) : Colors.transparent,
+                              backgroundColor: _currentPage < totalPages ? AppTheme.accentNeonGreen.withValues(alpha: 0.1) : Colors.transparent,
                               foregroundColor: _currentPage < totalPages ? AppTheme.accentNeonGreen : Colors.white24,
                               elevation: 0,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 side: BorderSide(
-                                  color: _currentPage < totalPages ? AppTheme.accentNeonGreen.withOpacity(0.3) : Colors.white10,
+                                  color: _currentPage < totalPages ? AppTheme.accentNeonGreen.withValues(alpha: 0.3) : Colors.white10,
                                 ),
                               ),
                             ),
@@ -209,7 +209,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 margin: const EdgeInsets.only(bottom: 20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppTheme.accentNeonGreen.withOpacity(0.3)),
+                  border: Border.all(color: AppTheme.accentNeonGreen.withValues(alpha: 0.3)),
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(11),
@@ -237,7 +237,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   filled: true, fillColor: Colors.black26, hintText: "0.0 - 32.0",
-                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppTheme.accentNeonGreen.withOpacity(0.3))),
+                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppTheme.accentNeonGreen.withValues(alpha: 0.3))),
                   focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: AppTheme.accentNeonGreen)),
                 ),
               ),
@@ -261,7 +261,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppTheme.accentNeonGreen.withOpacity(0.1),
+                  color: AppTheme.accentNeonGreen.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(

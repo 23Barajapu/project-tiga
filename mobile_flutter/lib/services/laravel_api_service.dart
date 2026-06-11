@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import '../config/app_config.dart';
 
@@ -28,7 +28,7 @@ class LaravelApiService {
         };
       }
     } catch (e) {
-      print('Error fetching sensor data: $e');
+      debugPrint('Error fetching sensor data: $e');
     }
 
     // Fallback if error
@@ -59,7 +59,7 @@ class LaravelApiService {
             .toList();
       }
     } catch (e) {
-      print('Error fetching history: $e');
+      debugPrint('Error fetching history: $e');
     }
     return [];
   }

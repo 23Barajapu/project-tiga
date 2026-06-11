@@ -122,7 +122,7 @@ class DashboardPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: const Color(0xFF1A2C21),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: const Color(0xFF00FF85).withOpacity(0.3)),
+                    border: Border.all(color: const Color(0xFF00FF85).withValues(alpha: 0.3)),
                   ),
                   child: Row(
                     children: [
@@ -174,7 +174,7 @@ class DashboardPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF1A2C21),
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

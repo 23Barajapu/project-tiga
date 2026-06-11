@@ -63,7 +63,7 @@ class LiveFeedLayer extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                    color: AppTheme.accentNeonGreen.withOpacity(0.3),
+                    color: AppTheme.accentNeonGreen.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   )
@@ -93,7 +93,7 @@ class LiveFeedLayer extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
-                  colors: [Colors.black.withOpacity(0.9), Colors.transparent],
+                  colors: [Colors.black.withValues(alpha: 0.9), Colors.transparent],
                 ),
               ),
               child: Column(
@@ -124,7 +124,7 @@ class LiveFeedLayer extends StatelessWidget {
                           borderRadius: BorderRadius.circular(2),
                           boxShadow: [
                             BoxShadow(
-                              color: AppTheme.accentNeonGreen.withOpacity(0.5),
+                              color: AppTheme.accentNeonGreen.withValues(alpha: 0.5),
                               blurRadius: 4,
                             )
                           ]

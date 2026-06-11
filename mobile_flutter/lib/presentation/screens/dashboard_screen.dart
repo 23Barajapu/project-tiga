@@ -110,9 +110,9 @@ class DashboardScreen extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.red.withOpacity(0.12),
+        color: Colors.red.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.red.withOpacity(0.4)),
+        border: Border.all(color: Colors.red.withValues(alpha: 0.4)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,9 +136,9 @@ class DashboardScreen extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 20),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.orange.withOpacity(0.1),
+        color: Colors.orange.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.orange.withOpacity(0.3)),
+        border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
@@ -179,7 +179,7 @@ class DashboardScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
           decoration: BoxDecoration(
-            color: Colors.red.withOpacity(0.8),
+            color: Colors.red.withValues(alpha: 0.8),
             borderRadius: BorderRadius.circular(4),
           ),
           child: Row(
@@ -206,10 +206,10 @@ class DashboardScreen extends StatelessWidget {
         color: Colors.black,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-            color: AppTheme.accentNeonGreen.withOpacity(0.4), width: 2),
+            color: AppTheme.accentNeonGreen.withValues(alpha: 0.4), width: 2),
         boxShadow: [
           BoxShadow(
-              color: AppTheme.accentNeonGreen.withOpacity(0.1),
+              color: AppTheme.accentNeonGreen.withValues(alpha: 0.1),
               blurRadius: 25,
               spreadRadius: 2)
         ],
@@ -254,9 +254,9 @@ class DashboardScreen extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Colors.black.withOpacity(0.2),
+                      Colors.black.withValues(alpha: 0.2),
                       Colors.transparent,
-                      Colors.black.withOpacity(0.2)
+                      Colors.black.withValues(alpha: 0.2)
                     ],
                   ),
                 ),
@@ -308,7 +308,7 @@ class DashboardScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppTheme.cardBackground,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppTheme.accentNeonGreen.withOpacity(0.1)),
+        border: Border.all(color: AppTheme.accentNeonGreen.withValues(alpha: 0.1)),
       ),
       child: Column(
         children: [
@@ -400,7 +400,7 @@ class DashboardScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                      color: AppTheme.accentNeonGreen.withOpacity(0.3)),
+                      color: AppTheme.accentNeonGreen.withValues(alpha: 0.3)),
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(11),
@@ -471,7 +471,7 @@ class DashboardScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppTheme.accentNeonGreen.withOpacity(0.1),
+                  color: AppTheme.accentNeonGreen.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(

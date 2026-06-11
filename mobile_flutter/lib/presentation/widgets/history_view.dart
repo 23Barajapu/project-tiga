@@ -56,11 +56,11 @@ class HistoryView extends StatelessWidget {
     // Prioritas Border: 1. Rekomendasi (Selesai), 2. Error, 3. Belum TSS (Warning), 4. Transparan
     Color borderColor = Colors.transparent;
     if (hasRec) {
-      borderColor = AppTheme.accentNeonGreen.withOpacity(0.3);
+      borderColor = AppTheme.accentNeonGreen.withValues(alpha: 0.3);
     } else if (record.isError) {
-      borderColor = Colors.red.withOpacity(0.3);
+      borderColor = Colors.red.withValues(alpha: 0.3);
     } else if (record.tss == null) {
-      borderColor = Colors.orange.withOpacity(0.5);
+      borderColor = Colors.orange.withValues(alpha: 0.5);
     }
 
     return Container(
@@ -92,7 +92,7 @@ class HistoryView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: iconColor.withOpacity(0.2),
+        color: iconColor.withValues(alpha: 0.2),
         shape: BoxShape.circle,
       ),
       child: Icon(
@@ -117,9 +117,9 @@ class HistoryView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: Colors.orange.withOpacity(0.1),
+              color: Colors.orange.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(4),
-              border: Border.all(color: Colors.orange.withOpacity(0.2)),
+              border: Border.all(color: Colors.orange.withValues(alpha: 0.2)),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -140,7 +140,7 @@ class HistoryView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: AppTheme.accentNeonGreen.withOpacity(0.1),
+              color: AppTheme.accentNeonGreen.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
@@ -164,10 +164,10 @@ Widget _buildBadge(HistoryRecord record) {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
           color: record.isError 
-              ? Colors.red.withOpacity(0.1) 
-              : (needsTss ? Colors.orange.withOpacity(0.1) : AppTheme.accentNeonGreen.withOpacity(0.1)),
+              ? Colors.red.withValues(alpha: 0.1) 
+              : (needsTss ? Colors.orange.withValues(alpha: 0.1) : AppTheme.accentNeonGreen.withValues(alpha: 0.1)),
           borderRadius: BorderRadius.circular(8),
-          border: needsTss ? Border.all(color: Colors.orange.withOpacity(0.3)) : null,
+          border: needsTss ? Border.all(color: Colors.orange.withValues(alpha: 0.3)) : null,
         ),
         child: Text(
           record.badgeText, 

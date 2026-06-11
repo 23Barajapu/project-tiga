@@ -24,18 +24,18 @@ bool isRipeStatus(const String& statusNanas) {
 void moveServo(String statusNanas) {
   statusNanas.trim();
   Serial.println("[Servo] Moving for status: " + statusNanas);
-  myservo.attach(servoPin);
+  myservo.attach(servoPin, 500, 2400);
 
   if (isRipeStatus(statusNanas)) {
     myservo.write(180);
-    delay(450);
+    delay(800);
     myservo.write(90);
-    delay(400);
+    delay(600);
   } else {
     myservo.write(0);
-    delay(450);
+    delay(800);
     myservo.write(90);
-    delay(400);
+    delay(600);
   }
   myservo.detach();
   Serial.println("[Servo] Done.");
@@ -97,7 +97,7 @@ void pollLaravelForServo() {
 
 void setup() {
   Serial.begin(115200);
-  ESP32PWM::allocateTimer(1);
+  ESP32PWM::allocateTimer(0);
   myservo.setPeriodHertz(50);
 
   myservo.attach(servoPin, 500, 2400);

@@ -52,7 +52,13 @@ if __name__ == "__main__":
 
     # 4. Update Laravel
     env_file = "backend-laravel/.env"
-    update_file(
-        env_file, r'SERVO_ESP_URL=http://[^\s]+', f'SERVO_ESP_URL=http://{esp_servo_ip}')
+    with open(env_file, 'r', encoding='utf-8') as f:
+        env_content = f.read()
+    if 'SERVO_ESP_URL' in env_content:
+        update_file(env_file, r'SERVO_ESP_URL=http://[^\s]+', f'SERVO_ESP_URL=http://{esp_servo_ip}')
+    else:
+        with open(env_file, 'a', encoding='utf-8') as f:
+            f.write(f'\nSERVO_ESP_URL=http://{esp_servo_ip}\n')
+        print(f"Update: {env_file}")
 
     print("\nSelesai! Semua IP berhasil diupdate.")

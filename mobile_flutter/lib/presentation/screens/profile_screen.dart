@@ -44,7 +44,7 @@ class ProfileScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppTheme.cardBackground,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppTheme.accentNeonGreen.withOpacity(0.5), width: 1),
+                border: Border.all(color: AppTheme.accentNeonGreen.withValues(alpha: 0.5), width: 1),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

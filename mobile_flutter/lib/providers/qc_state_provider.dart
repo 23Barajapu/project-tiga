@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -48,16 +49,10 @@ class QcStateProvider extends ChangeNotifier {
           List<HistoryRecord> allRecords = data.map((item) {
             // Normalkan status menjadi huruf besar untuk menghindari case-sensitive (RIPE / RAW)
             String statusRaw = (item['status'] ?? 'UNKNOWN').toString().toUpperCase();
-            String gradeText = "";
             bool isError = false;
 
-            if (statusRaw == 'RIPE') {
-              gradeText = "Grade A - Matang";
-            } else if (statusRaw == 'HALF_RIPE') {
-              gradeText = "Grade B - Setengah";
-            } else {
+            if (statusRaw != 'RIPE' && statusRaw != 'HALF_RIPE') {
               // Status 'RAW' dari database otomatis masuk ke sini
-              gradeText = "Grade C - Mentah";
               isError = true;
             }
 
@@ -119,7 +114,7 @@ class QcStateProvider extends ChangeNotifier {
       connectionMessage =
           'Gagal konek ke ${AppConfig.laptopIp}:${AppConfig.laravelPort}\n'
           'Pastikan HP & laptop satu WiFi, Laravel jalan, firewall dibuka.';
-      print("Error Fetching Data: $e");
+      debugPrint("Error Fetching Data: $e");
       notifyListeners();
     }
   }
@@ -140,7 +135,7 @@ class QcStateProvider extends ChangeNotifier {
       }
       return false;
     } catch (e) {
-      print("Error Update TSS: $e");
+      debugPrint("Error Update TSS: $e");
       return false;
     }
   }

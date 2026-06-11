@@ -17,7 +17,6 @@ class AppTheme {
         primary: accentNeonGreen,
         secondary: accentNeonGreen,
         surface: cardBackground,
-        background: primaryBackground,
       ),
       textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).copyWith(
         displayLarge: GoogleFonts.inter(color: textPrimary, fontWeight: FontWeight.bold),
@@ -37,7 +36,7 @@ class AppTheme {
           backgroundColor: accentNeonGreen,
           foregroundColor: primaryBackground,
           elevation: 4,
-          shadowColor: accentNeonGreen.withOpacity(0.5),
+          shadowColor: accentNeonGreen.withValues(alpha: 0.5),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -48,15 +47,15 @@ class AppTheme {
         ),
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (states.contains(MaterialState.selected)) {
+        thumbColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.selected)) {
             return accentNeonGreen;
           }
           return Colors.white54;
         }),
-        trackColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (states.contains(MaterialState.selected)) {
-            return accentNeonGreen.withOpacity(0.5);
+        trackColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.selected)) {
+            return accentNeonGreen.withValues(alpha: 0.5);
           }
           return Colors.black38;
         }),

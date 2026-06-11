@@ -2,6 +2,7 @@ import os
 import sys
 import re
 
+
 def update_file(filepath, pattern, replacement):
     if not os.path.exists(filepath):
         print(f"File {filepath} tidak ditemukan.")
@@ -12,6 +13,7 @@ def update_file(filepath, pattern, replacement):
     with open(filepath, 'w', encoding='utf-8') as f:
         f.write(new_content)
     print(f"Update: {filepath}")
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 4:
@@ -27,22 +29,30 @@ if __name__ == "__main__":
 
     # 1. Update Flutter
     flutter_file = "mobile_flutter/lib/config/app_config.dart"
-    update_file(flutter_file, r"static const String laptopIp = '[^']+';", f"static const String laptopIp = '{laptop_ip}';")
-    update_file(flutter_file, r"static const String espCamIp = '[^']+';", f"static const String espCamIp = '{esp_cam_ip}';")
-    update_file(flutter_file, r"static const String espServoIp = '[^']+';", f"static const String espServoIp = '{esp_servo_ip}';")
+    update_file(
+        flutter_file, r"static const String laptopIp = '[^']+';", f"static const String laptopIp = '{laptop_ip}';")
+    update_file(
+        flutter_file, r"static const String espCamIp = '[^']+';", f"static const String espCamIp = '{esp_cam_ip}';")
+    update_file(
+        flutter_file, r"static const String espServoIp = '[^']+';", f"static const String espServoIp = '{esp_servo_ip}';")
 
     # 2. Update Python AI
     ai_file = "ai-interface/main.py"
-    update_file(ai_file, r'ESP32_IP\s*=\s*"[^"]+"', f'ESP32_IP = "{esp_cam_ip}"')
-    update_file(ai_file, r'LAPTOP_IP\s*=\s*"[^"]+"', f'LAPTOP_IP = "{laptop_ip}"')
-    update_file(ai_file, r'SERVO_ESP_IP\s*=\s*"[^"]+"', f'SERVO_ESP_IP = "{esp_servo_ip}"')
+    update_file(
+        ai_file, r'ESP32_IP\s*=\s*"[^"]+"', f'ESP32_IP = "{esp_cam_ip}"')
+    update_file(
+        ai_file, r'LAPTOP_IP\s*=\s*"[^"]+"', f'LAPTOP_IP = "{laptop_ip}"')
+    update_file(
+        ai_file, r'SERVO_ESP_IP\s*=\s*"[^"]+"', f'SERVO_ESP_IP = "{esp_servo_ip}"')
 
     # 3. Update ESP32 Servo
     servo_file = "esp32-code/index/index.ino"
-    update_file(servo_file, r'const String url = "http://[^:]+:8001', f'const String url = "http://{laptop_ip}:8001')
+    update_file(
+        servo_file, r'const String url = "http://[^:]+:8000', f'const String url = "http://{laptop_ip}:8000')
 
     # 4. Update Laravel
     env_file = "backend-laravel/.env"
-    update_file(env_file, r'SERVO_ESP_URL=http://[^\s]+', f'SERVO_ESP_URL=http://{esp_servo_ip}')
+    update_file(
+        env_file, r'SERVO_ESP_URL=http://[^\s]+', f'SERVO_ESP_URL=http://{esp_servo_ip}')
 
     print("\nSelesai! Semua IP berhasil diupdate.")
